@@ -1,0 +1,31 @@
+{
+  "id": "backstop_mosaico",
+  "viewports": [{
+    "name": "desktop",
+    "width": 1920,
+    "height": 3000
+  }],
+  "onBeforeScript": "onBefore.js",
+  "onReadyScript": "onReady.js",
+  "paths": {
+    "bitmaps_reference": "data/screenshots/reference",
+    "bitmaps_test": "data/screenshots/test",
+    "engine_scripts": "data/engine_scripts/puppet",
+    "html_report": "data/html_report",
+    "ci_report": "data/ci_report"
+  },
+  "scenarios": [{
+    "label": "Mosiaco - Main Screen",
+    "url": "http://civi.d7/civicrm/a/#/mosaico-template",
+    "onReadyScript": "mosaico/index.js"
+  }],
+  "report": ["CLI", "browser"],
+  "engine": "puppeteer",
+  "engineOptions": {
+    "waitTimeout": 120000
+  },
+  "asyncCaptureLimit": 1,
+  "asyncCompareLimit": 50,
+  "debug": false,
+  "debugWindow": false
+}
