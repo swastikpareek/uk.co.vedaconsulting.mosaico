@@ -21,8 +21,9 @@ const puppeteer = require('puppeteer');
 const PluginError = require('plugin-error');
 
 const bootstrapNamespace = '#bootstrap-theme';
-const BACKSTOP_DIR = 'backstop-config/backstop_data';
-const CONFIG_DIR = 'backstop-config/config';
+const BACKSTOP_DIR = 'tests/backstop/';
+const BACKSTOP_DATA_DIR = BACKSTOP_DIR + 'data';
+const CONFIG_DIR = BACKSTOP_DIR + 'config';
 const CONFIG_TPL = { 'url': 'http://%{site-host}', 'root': '%{path-to-site-root}' };
 const FILES = {
   siteConfig: path.join(CONFIG_DIR, 'site-config.json'),
@@ -151,15 +152,15 @@ function createTempConfig () {
   
   content.scenarios = _(content.scenarios).map((scenario, index, scenarios) => {
       return _.assign(scenario, {
-        cookiePath: path.join(BACKSTOP_DIR, 'cookies', 'admin.json'),
+        cookiePath: path.join(BACKSTOP_DATA_DIR, 'cookies', 'admin.json'),
         count: '(' + (index + 1) + ' of ' + scenarios.length + ')',
         url: scenario.url.replace('{url}', config.url)
       });
     })
     .value();
 
-  ['bitmaps_reference', 'bitmaps_test', 'html_report', 'ci_report'].forEach(path => {
-    content.paths[path] = content.paths[path].replace('{group}', group);
+  ['bitmaps_reference', 'bitmaps_test', 'html_report', 'ci_report', 'engine_scripts'].forEach(path => {
+    content.paths[path] = BACKSTOP_DIR + content.paths[path];
   });
 
   return JSON.stringify(content);
@@ -178,7 +179,7 @@ function runBackstopJS (command) {
   if (touchSiteConfigFile()) {
     throwError(
       'No site-config.json file detected!\n' +
-      `\tOne has been created for you under ${path.basename(BACKSTOP_DIR)}\n` +
+      `\tOne has been created for you under ${path.basename(BACKSTOP_DATA_DIR)}\n` +
       '\tPlease insert the real value for each placeholder and try again'
     );
   }
@@ -262,7 +263,7 @@ function throwError (msg) {
  * @return {Promise}
  */
 async function writeCookies () {
-  const cookiesDir = path.join(BACKSTOP_DIR, 'cookies');
+  const cookiesDir = path.join(BACKSTOP_DATA_DIR, 'cookies');
   const cookieFilePath = path.join(cookiesDir, 'admin.json');
   const config = siteConfig();
 
