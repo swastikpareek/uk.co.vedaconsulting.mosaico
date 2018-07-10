@@ -1,2 +1,9 @@
+.DS_Store
 build/
 packages/mosaico/
+node_modules/
+backstop-config/backstop_data/cookies
+backstop-config/backstop_data/screenshots
+backstop-config/backstop_data/*_report
+backstop-config/config/backstop.temp.json
+backstop-config/config/site-config.json
