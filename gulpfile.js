@@ -5,7 +5,6 @@ var sourcemaps = require('gulp-sourcemaps');
 var autoprefixer = require('gulp-autoprefixer');
 var postcss = require('gulp-postcss');
 var postcssPrefix = require('postcss-prefix-selector');
-var postcssDiscardDuplicates = require('postcss-discard-duplicates');
 var civicrmScssRoot = require('civicrm-scssroot')();
 const _ = require('lodash');
 const argv = require('yargs').argv;
@@ -31,11 +30,11 @@ const FILES = {
   tpl: path.join(CONFIG_DIR, 'backstop.tpl.json')
 };
 
-/** 
-  * Gulp sass task for compiling SASS to css 
+/**
+  * Gulp sass task for compiling SASS to css
   **/
 
-gulp.task('sass', ['sass-sync'], function() {
+gulp.task('sass', ['sass-sync'], function () {
   gulp.src('sass/mosaico-bootstrap.scss')
     .pipe(sourcemaps.init())
     .pipe(sass({
@@ -49,7 +48,7 @@ gulp.task('sass', ['sass-sync'], function() {
     }))
     .pipe(postcss([postcssPrefix({
       prefix: bootstrapNamespace + ' ',
-      exclude: [/^html/, /^body/, /^.select2-drop-auto-width/, /^div\[ng\-controller="PreviewMailingDialogCtrl"\]/]
+      exclude: [/^html/, /^body/, /^.select2-drop-auto-width/, /^div\[ng-controller="PreviewMailingDialogCtrl"\]/]
     })]))
     .pipe(cssnano())
     .pipe(sourcemaps.write('./'))
@@ -86,40 +85,38 @@ gulp.task('sass', ['sass-sync'], function() {
     .pipe(gulp.dest('./css/'));
 });
 
-/** 
+/**
   * Gulp sass task for getting scssRoot for civicrm related config
-  **/  
-gulp.task('sass-sync', function(){
+  **/
+gulp.task('sass-sync', function () {
   civicrmScssRoot.updateSync();
 });
 
-/** 
+/**
   * Gulp sass:watch task for getting continious watch of sass
-  **/  
-gulp.task('sass:watch', function() {
+  **/
+gulp.task('sass:watch', function () {
   gulp.watch('sass/**/*.scss', ['sass']);
 });
 
-/** 
+/**
   * Gulp default task
-  **/  
+  **/
 gulp.task('default', ['sass', 'sass:watch', 'backstopjs:reference', 'backstopjs:test']);
 
-
-/** 
+/**
   * Gulp backstop tasks
   * 'backstopjs:reference': For creating reference screenshots
   * 'backstopjs:test': For creating test screenshots and matching them
   * 'backstopjs:openReport': For opening reports in the browser
   * 'backstopjs:approve': Approving reports
-  **/  
+  **/
 
 ['reference', 'test', 'openReport', 'approve'].map(action => {
   gulp.task('backstopjs:' + action, () => {
     return runBackstopJS(action);
   });
 });
-
 
 /**
  * Removes the temp config file and sends a notification
@@ -146,17 +143,16 @@ function cleanUpAndNotify (success) {
  * @return {String}
  */
 function createTempConfig () {
-  const group = argv.group ? argv.group : '_all_';
   const config = siteConfig();
   const content = JSON.parse(fs.readFileSync(FILES.tpl));
-  
+
   content.scenarios = _(content.scenarios).map((scenario, index, scenarios) => {
-      return _.assign(scenario, {
-        cookiePath: path.join(BACKSTOP_DATA_DIR, 'cookies', 'admin.json'),
-        count: '(' + (index + 1) + ' of ' + scenarios.length + ')',
-        url: scenario.url.replace('{url}', config.url)
-      });
-    })
+    return _.assign(scenario, {
+      cookiePath: path.join(BACKSTOP_DATA_DIR, 'cookies', 'admin.json'),
+      count: '(' + (index + 1) + ' of ' + scenarios.length + ')',
+      url: scenario.url.replace('{url}', config.url)
+    });
+  })
     .value();
 
   ['bitmaps_reference', 'bitmaps_test', 'html_report', 'ci_report', 'engine_scripts'].forEach(path => {
@@ -203,9 +199,9 @@ function runBackstopJS (command) {
         }
       });
   })
-  .catch(function (err) {
-    throwError(err.message);
-  });
+    .catch(function (err) {
+      throwError(err.message);
+    });
 }
 
 /**
