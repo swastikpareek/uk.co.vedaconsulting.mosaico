@@ -131,6 +131,19 @@ Styling changes should go into `sass` directory and compiled to CSS using the fo
 gulp sass
 ```
 
+#### Backstop Test suite
+
+Backstop is integrated into the gulp architecture to give support for visual regression tesing. After installing node packages following commands will be available.
+
+    ```shell
+    gulp backstopjs:reference
+    ```
+
+    ```shell
+    gulp backstopjs:test
+    ```
+
+For understanding and setting up the test suite see [TESTING.md](TESTING.md)
 
 #### Patching Mosaico
 
